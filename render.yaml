@@ -1,0 +1,41 @@
+# Render configuration for V.M.S GARMENTS App
+services:
+  # Backend API Service
+  - type: web
+    name: vms-garments
+    runtime: node
+    region: singapore
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: FRONTEND_URL
+        value: https://vms-garments.onrender.com
+
+  # Frontend Static Site
+  - type: web
+    name: vms-garments
+    runtime: static
+    region: singapore
+    buildCommand: cd frontend-new && npm install && npm run build
+    staticPublishPath: frontend-new/dist
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: NODE_VERSION
+        value: 18
